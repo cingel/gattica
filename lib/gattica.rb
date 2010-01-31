@@ -267,13 +267,14 @@ module Gattica
     
     # Creates a valid query string for GA
     def build_query_string(args,profile)
-      query_params  = args.clone
-      ga_start_date = query_params.delete(:start_date)
-      ga_end_date   = query_params.delete(:end_date)
-      ga_dimensions = query_params.delete(:dimensions)
-      ga_metrics    = query_params.delete(:metrics)
-      ga_sort       = query_params.delete(:sort)
-      ga_filters    = query_params.delete(:filters)
+      query_params    = args.clone
+      ga_start_date   = query_params.delete(:start_date)
+      ga_end_date     = query_params.delete(:end_date)
+      ga_dimensions   = query_params.delete(:dimensions)
+      ga_metrics      = query_params.delete(:metrics)
+      ga_sort         = query_params.delete(:sort)
+      ga_filters      = query_params.delete(:filters)
+      ga_max_results  = query_params.delete(:max_results) || query_params.delete(:'max-results')
       
       output = "ids=ga:#{profile}&start-date=#{ga_start_date}&end-date=#{ga_end_date}"
       unless ga_dimensions.nil? || ga_dimensions.empty?
@@ -303,7 +304,9 @@ module Gattica
           end
         end.join(';')
       end
- 
+
+      output += "&max-results=#{ga_max_results}" if ga_max_results
+
       query_params.inject(output) {|m,(key,value)| m << "&#{key}=#{value}"}
  
       return output
